@@ -898,6 +898,7 @@ named_hour returns [String ampm]
 time_zone
   : time_zone_plus_offset
   | time_zone_abbreviation
+  | Z
   ;
   
 time_zone_plus_offset
@@ -905,7 +906,7 @@ time_zone_plus_offset
   ;
 
 time_zone_offset
-  : (PLUS | DASH) hours (COLON? minutes)? 
+  : (PLUS | DASH) hours (COLON? minutes)?
   ;
       
 time_zone_abbreviation
@@ -917,3 +918,5 @@ time_zone_abbreviation
   | AKST -> ZONE["America/Anchorage"]
   | HAST -> ZONE["Pacific/Honolulu"]
   ;
+
+
