@@ -16,9 +16,9 @@
   </licenses>
   
   <scm>
-    <connection>scm:git:git@github.com:joestelmach/natty.git</connection>
-    <url>scm:git:git@github.com:joestelmach/natty.git</url>
-    <developerConnection>scm:git:git@github.com:joestelmach/natty.git</developerConnection>  
+    <connection>scm:git:git@github.com:pontusvision/pontus-natty.git</connection>
+    <url>scm:git:git@github.com:pontusvision/pontus-natty.git</url>
+    <developerConnection>scm:git:git@github.com:pontusvision/pontus-natty.git</developerConnection>  
   </scm>
   
   <developers>

@@ -41,7 +41,7 @@ tokens {
 }
 
 @members {
-  private static org.slf4j.Logger _logger =
+  private org.slf4j.Logger _logger =
     org.slf4j.LoggerFactory.getLogger(com.joestelmach.natty.generated.DateParser.class);
 
   @Override
@@ -75,7 +75,7 @@ date_time
   
 date_time_separator
   : WHITE_SPACE (AT WHITE_SPACE)?
-  | WHITE_SPACE? COMMA WHITE_SPACE? (AT WHITE_SPACE)?
+  | COMMA WHITE_SPACE? (AT WHITE_SPACE)?
   | T
   ;
   
@@ -342,19 +342,20 @@ formal_date
       -> ^(EXPLICIT_DATE relaxed_month ^(DAY_OF_MONTH INT["1"]) relaxed_year?)
 
   // year first: 1979-02-28, 1980/01/02, etc.  full 4 digit year required to match
-  // LPPM - changed order of day and month to adapt to non-American standards.
-
   | relaxed_day_of_week? formal_year_four_digits formal_date_separator (formal_month_of_year | relaxed_month) formal_date_separator formal_day_of_month
-      -> ^(EXPLICIT_DATE formal_day_of_month formal_month_of_year? relaxed_month? relaxed_day_of_week? formal_year_four_digits)
+      -> ^(EXPLICIT_DATE formal_month_of_year? relaxed_month? formal_day_of_month relaxed_day_of_week? formal_year_four_digits)
       
-  // year last: 1/02/1980, 2/28/79.  2 or 4 digit year is acceptable
-  // LPPM - changed order of day and month to adapt to non-American standards.
-  | relaxed_day_of_week? formal_day_of_month formal_date_separator formal_month_of_year(formal_date_separator formal_year)?
-      -> ^(EXPLICIT_DATE formal_day_of_month formal_month_of_year  relaxed_day_of_week? formal_year?)
+  // LPPM - swapped day/month -- year last: 19/12/1980, 28/2/79.  2 or 4 digit year is acceptable 
+  | relaxed_day_of_week? formal_day_of_month formal_date_separator formal_month_of_year (formal_date_separator formal_year)?
+      -> ^(EXPLICIT_DATE formal_month_of_year formal_day_of_month relaxed_day_of_week? formal_year?)
 
   // 15-Apr-2014
   | formal_day_of_month formal_date_separator relaxed_month (formal_date_separator formal_year_four_digits)?
       -> ^(EXPLICIT_DATE relaxed_month formal_day_of_month formal_year_four_digits?)
+
+  // LPPM - 15 Apr 14, 15sep1954 
+  | formal_day_of_month WHITE_SPACE? relaxed_month (WHITE_SPACE? formal_year)?
+      -> ^(EXPLICIT_DATE relaxed_month formal_day_of_month formal_year?)
   ;
   
 formal_month_of_year
@@ -898,7 +899,6 @@ named_hour returns [String ampm]
 time_zone
   : time_zone_plus_offset
   | time_zone_abbreviation
-  | Z
   ;
   
 time_zone_plus_offset
@@ -906,7 +906,7 @@ time_zone_plus_offset
   ;
 
 time_zone_offset
-  : (PLUS | DASH) hours (COLON? minutes)?
+  : (PLUS | DASH) hours (COLON? minutes)? 
   ;
       
 time_zone_abbreviation
@@ -918,5 +918,3 @@ time_zone_abbreviation
   | AKST -> ZONE["America/Anchorage"]
   | HAST -> ZONE["Pacific/Honolulu"]
   ;
-
-
